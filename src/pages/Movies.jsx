@@ -1,56 +1,45 @@
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { fetchMovieSearch } from 'services/api_movie';
-import MoviesList from 'components/MoviesList';
-import SearchForm from 'components/SearchBox/SearchBox';
+import MoviesList from '../components/MoviesList/MoviesList';
+import SearchForm from 'components/SearchForm/SearchForm';
 
 const Movies = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(null);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const location = useLocation();
-  const searchQuery = searchParams.get('name') ?? '';
+  const searchQuery = searchParams.get('query') ?? '';
 
   useEffect(() => {
-    if (!searchQuery) {
-      setMovies([]);
-      return;
-    }
-    async function getMovieSearch() {
-      try {
-        const data = await fetchMovieSearch(searchQuery);
-        console.log(data);
-        setMovies(data);
-      } catch (error) {
-        console.warn('Something went wrong');
-      }
-    }
-    if (searchQuery) {
-      getMovieSearch();
-    }
+    if (!searchQuery?.trim()) return;
+
+    fetchMovieSearch(searchQuery)
+      .then(({ results }) => {
+        console.log(results);
+        setMovies(results);
+
+        if (results.length === 0) {
+          toast.error(`There are no movies for ${searchQuery}, try some else`);
+          return;
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, [searchQuery]);
 
   const handleMovieNameSubmit = name => {
-    if (name) {
-      setSearchParams(name);
-    }
+    setSearchParams(name !== '' ? { query: name } : {});
   };
-
-  //   const handlerSubmit = e => {
-  //     e.preventDefault();
-  //     const searchParams = e.target.query.value.trim().toLowerCase();
-  //     if (!searchParams) return;
-  //     setSearchParams({ searchParams });
-  //   };
 
   return (
     <main>
+      <Toaster />
       <SearchForm onSubmit={handleMovieNameSubmit} />
-      {/* <form onSubmit={handlerSubmit}>
-        <input type="text" name="query" />
-      </form> */}
 
-      {movies && <MoviesList movies={movies} location={location} />}
+      {movies && <MoviesList movies={movies} />}
     </main>
   );
 };

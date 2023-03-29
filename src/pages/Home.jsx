@@ -1,31 +1,37 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+
 import { fetchMovieTrendingDay } from 'services/api_movie';
-import MoviesList from 'components/MoviesList';
+import MoviesList from '../components/MoviesList/MoviesList';
+import { Loader } from 'components/Loader/Loader';
 
 const Home = () => {
-  //   const [loading, setLoading] = useState(false);
-  const [movies, setMovies] = useState([]);
-  const location = useLocation();
+  const [loading, setLoading] = useState(false);
+  const [movies, setMovies] = useState(null);
 
   useEffect(() => {
-    //  setLoading(true);
-    async function getMovieTrendingDay() {
-      try {
-        const data = await fetchMovieTrendingDay();
-        setMovies(data);
-        //   setLoading(false);
-      } catch (error) {
-        console.warn('Something went wrong');
-      }
-    }
-    getMovieTrendingDay();
+    setLoading(true);
+    fetchMovieTrendingDay()
+      .then(({ results }) => {
+        setMovies(results);
+      })
+      .catch(error => {
+        console.error(error);
+      })
+      .finally(setLoading(false));
   }, []);
+  if (!movies) return;
 
   return (
     <main>
-      <h1>Trending today</h1>
-      {movies && <MoviesList movies={movies} location={location} />}
+      <h2
+        style={{
+          textAlign: 'center',
+        }}
+      >
+        Trending today
+      </h2>
+      {loading && <Loader />}
+      {movies && <MoviesList movies={movies} />}
     </main>
   );
 };

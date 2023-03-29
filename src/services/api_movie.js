@@ -1,48 +1,36 @@
 import axios from 'axios';
 
 const API_KEY = 'a85bcd146b051e6a179fdcb9f5b0d494';
-axios.defaults.baseURL = 'https://api.themoviedb.org/3/';
+const instance = axios.create({
+  baseURL: 'https://api.themoviedb.org/3',
+  params: { api_key: API_KEY, language: 'en-US', include_adult: false },
+});
 
-export async function fetchMovieTrendingDay() {
-  const { data } = await axios.get(`/trending/movie/day`, {
-    params: { api_key: API_KEY },
-  });
-  return data.results;
-}
+export const fetchMovieTrendingDay = async () => {
+  const { data } = await instance.get('/trending/movie/day');
+  return data;
+};
 
-export async function fetchMovieSearch(query) {
-  const { data } = await axios.get(`/search/movie`, {
+export const fetchMovieSearch = async query => {
+  const { data } = await instance.get('/search/movie', {
     params: {
-      api_key: API_KEY,
       query,
     },
   });
-  return data.results;
-}
-
-export async function fetchMovieDetail(id) {
-  const { data } = await axios.get(`/movies/${id}`, {
-    params: {
-      api_key: API_KEY,
-    },
-  });
   return data;
-}
+};
 
-export async function fetchMovieActors(id) {
-  const { data } = await axios.get(`/movies/${id}/credits`, {
-    params: {
-      api_key: API_KEY,
-    },
-  });
+export const fetchMovieDetail = async id => {
+  const { data } = await instance.get(`/movie/${id}`);
+  return data;
+};
+
+export const fetchMovieActors = async id => {
+  const { data } = await instance.get(`/movie/${id}/credits`);
   return data.cast;
-}
+};
 
-export async function fetchMovieReview(id) {
-  const { data } = await axios.get(`/movies/${id}/reviews`, {
-    params: {
-      api_key: API_KEY,
-    },
-  });
+export const fetchMovieReview = async id => {
+  const { data } = await instance.get(`/movie/${id}/reviews`);
   return data.results;
-}
+};
