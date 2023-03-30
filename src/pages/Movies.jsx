@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { fetchMovieSearch } from 'services/api_movie';
@@ -7,9 +7,8 @@ import SearchForm from 'components/SearchForm/SearchForm';
 
 const Movies = () => {
   const [movies, setMovies] = useState(null);
-
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const location = useLocation();
   const searchQuery = searchParams.get('query') ?? '';
 
   useEffect(() => {
@@ -39,7 +38,7 @@ const Movies = () => {
       <Toaster />
       <SearchForm onSubmit={handleMovieNameSubmit} />
 
-      {movies && <MoviesList movies={movies} />}
+      {movies && <MoviesList movies={movies} location={location} />}
     </main>
   );
 };

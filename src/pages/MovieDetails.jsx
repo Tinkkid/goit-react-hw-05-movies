@@ -36,7 +36,7 @@ const MovieDetails = () => {
 
   if (!movie) return;
 
-  const backLinkHref = location.state?.from ?? '/';
+  const backLinkHref = location.state?.from ?? '/movies/:movieId';
 
   const {
     original_title,
