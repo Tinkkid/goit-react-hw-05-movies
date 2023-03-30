@@ -36,7 +36,7 @@ const MovieDetails = () => {
 
   if (!movie) return;
 
-  const backLinkHref = location.state?.from ?? '/movies/:movieId';
+  const backLinkHref = location.state?.from ?? '/';
 
   const {
     original_title,
@@ -93,10 +93,14 @@ const MovieDetails = () => {
         </Text>
         <ListAddInfo>
           <ItemAddInfo>
-            <StyledNavLink to="cast">Cast</StyledNavLink>
+            <StyledNavLink to="cast" state={{ from: backLinkHref }}>
+              Cast
+            </StyledNavLink>
           </ItemAddInfo>
           <ItemAddInfo>
-            <StyledNavLink to="reviews">Reviews</StyledNavLink>
+            <StyledNavLink to="reviews" state={{ from: backLinkHref }}>
+              Reviews
+            </StyledNavLink>
           </ItemAddInfo>
         </ListAddInfo>
         <Suspense fallback={<div>Loading subpage...</div>}>

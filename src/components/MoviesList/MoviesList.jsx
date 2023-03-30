@@ -1,12 +1,10 @@
-import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { List, ItemMovie, LinkStyled, Image, Title } from './MoviesList.styled';
 
 const defaultImage =
   'https://cdn.pixabay.com/photo/2016/11/09/23/16/music-1813100_960_720.png';
 
-const MoviesList = ({ movies }) => {
-  const location = useLocation();
+const MoviesList = ({ movies, location }) => {
   return (
     <List>
       {movies.map(({ id, title, poster_path, release_date }) => (
